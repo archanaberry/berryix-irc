@@ -1,53 +1,60 @@
-# Compiler dan flags
+# === Compiler dan flags ===
 CC = gcc
-CFLAGS = -Wall -Iinclude
+CFLAGS = -Wall -Iinclude/berry -Iinclude/berry/matrix -Iinclude/berry/irc
+LDFLAGS = -lcurl -ljson-c
 
 # === Direktori ===
-SRC_DIR = source/berry
-BUILD_DIR = build
 INCLUDE_DIR = include/berry
+SOURCE_DIR = source/berry
+MATRIX_DIR = matrix
+IRC_DIR = irc
 TEST_DIR = test
-EXEC_DIR = test_exec
+BIN_DIR = bin
+OBJ_DIR = build
 
-# === MATRIX ===
-MATRIX_SRC = $(SRC_DIR)/matrix/matrix_driver.c
-MATRIX_OBJ = $(BUILD_DIR)/matrix_driver.o
+# === File sumber utama ===
+MATRIX_SRC = $(SOURCE_DIR)/$(MATRIX_DIR)/matrix_driver.c
+IRC_SRC = $(SOURCE_DIR)/$(IRC_DIR)/irc_driver.c
+
+# === File header ===
+MATRIX_HEADER = $(INCLUDE_DIR)/$(MATRIX_DIR)/matrix_driver.h
+IRC_HEADER = $(INCLUDE_DIR)/$(IRC_DIR)/irc_driver.h
+
+# === File test ===
 MATRIX_TEST = $(TEST_DIR)/test_matrix.c
-MATRIX_EXEC = $(EXEC_DIR)/matrix_exec
-
-# === IRC ===
-IRC_SRC = $(SRC_DIR)/irc/irc_driver.c
-IRC_OBJ = $(BUILD_DIR)/irc_driver.o
 IRC_TEST = $(TEST_DIR)/test_irc.c
-IRC_EXEC = $(EXEC_DIR)/irc_exec
 
-# === Direktori build dan exec ===
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+# === Output eksekusi ===
+MATRIX_EXEC = $(BIN_DIR)/test_matrix
+IRC_EXEC = $(BIN_DIR)/test_irc
 
-$(EXEC_DIR):
-	mkdir -p $(EXEC_DIR)
-
-# === Build objek matrix dan irc ===
-$(MATRIX_OBJ): $(MATRIX_SRC) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(IRC_OBJ): $(IRC_SRC) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# === Build executable untuk matrix test ===
-$(MATRIX_EXEC): $(MATRIX_TEST) $(MATRIX_OBJ) | $(EXEC_DIR)
-	$(CC) $(CFLAGS) $^ -o $@
-
-# === Build executable untuk irc test ===
-$(IRC_EXEC): $(IRC_TEST) $(IRC_OBJ) | $(EXEC_DIR)
-	$(CC) $(CFLAGS) $^ -o $@
+.PHONY: all clean test-matrix test-irc run
 
 # === Target utama ===
 all: $(MATRIX_EXEC) $(IRC_EXEC)
 
-# === Clean ===
-clean:
-	rm -rf $(BUILD_DIR) $(EXEC_DIR)
+# === Buat direktori bin kalau belum ada ===
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 
-.PHONY: all clean
+# === Build test_matrix ===
+$(MATRIX_EXEC): $(MATRIX_TEST) $(MATRIX_SRC) $(MATRIX_HEADER) | $(BIN_DIR)
+	$(CC) $(CFLAGS) $(MATRIX_TEST) $(MATRIX_SRC) -o $@ $(LDFLAGS)
+
+# === Build test_irc ===
+$(IRC_EXEC): $(IRC_TEST) $(IRC_SRC) $(IRC_HEADER) | $(BIN_DIR)
+	$(CC) $(CFLAGS) $(IRC_TEST) $(IRC_SRC) -o $@ $(LDFLAGS)
+
+# === Bersihkan hasil build ===
+clean:
+	rm -rf $(BIN_DIR) $(OBJ_DIR)
+
+# === Jalankan masing-masing test ===
+test-matrix: $(MATRIX_EXEC)
+	./$(MATRIX_EXEC)
+
+test-irc: $(IRC_EXEC)
+	./$(IRC_EXEC)
+
+# === Default run ===
+run: test-matrix

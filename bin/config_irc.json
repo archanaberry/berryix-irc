@@ -1,0 +1,8 @@
+{
+    "server": "irc.libera.chat",
+    "port": 6667,
+    "nick": "TestBot",
+    "user": "TestBot",
+    "channel": "#imphnen",
+    "message": "Hello from test_irc via json-c!"
+  }  
