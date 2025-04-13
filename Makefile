@@ -1,36 +1,40 @@
+# Compiler dan flags
 CC = gcc
-CFLAGS = -Wall -I./include -I./include/berry/ircmatrix
-LIBS = -lcurl -ljson-c -lpthread  # Menambahkan library json-c untuk parsing JSON
+CFLAGS = -Wall -Iinclude
 
-# Direktori sumber
-SRC_DIR = source/berry/ircmatrix
-INCLUDE_DIR = include/berry/ircmatrix
+# Direktori
+SRC_DIR = source/berry/matrix
+BUILD_DIR = build
+INCLUDE_DIR = include
 TEST_DIR = test
+EXEC_DIR = test_exec
 
-# Menyusun daftar file header (.h) dan file sumber (.c)
-HEADERS = $(wildcard $(INCLUDE_DIR)/*.h)
-SOURCES = $(wildcard $(SRC_DIR)/*.c)
-OBJECTS = $(SOURCES:.c=.o)
+# File sumber
+SRC = $(SRC_DIR)/matrix_driver.c
+OBJ = $(BUILD_DIR)/matrix_driver.o
+TEST = $(TEST_DIR)/test.c
+TARGET = $(EXEC_DIR)/test_exec
 
-# Menentukan nama file output
-TARGET_LIB = libchat.a
-TEST_EXEC = test_exec  # Nama eksekusi file tes
+# Buat direktori build dan exec jika belum ada
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
-# Aturan utama
-all: $(TARGET_LIB) $(TEST_EXEC)
+$(EXEC_DIR):
+	mkdir -p $(EXEC_DIR)
 
-# Membuat library statis
-$(TARGET_LIB): $(OBJECTS)
-		ar rcs $@ $^
+# Build objek
+$(OBJ): $(SRC) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Membuat file eksekusi tes
-$(TEST_EXEC): $(TEST_DIR)/test.c $(TARGET_LIB)
-		$(CC) $(CFLAGS) -o $(TEST_EXEC) $(TEST_DIR)/test.c $(OBJECTS) $(LIBS)
+# Build final executable
+$(TARGET): $(TEST) $(OBJ) | $(EXEC_DIR)
+	$(CC) $(CFLAGS) $^ -o $@
 
-# Aturan untuk membuat file objek dari file sumber
-%.o: %.c
-		$(CC) $(CFLAGS) -c $< -o $@
+# Target utama
+all: $(TARGET)
 
-# Membersihkan file yang dihasilkan
+# Clean file objek dan hasil compile
 clean:
-		rm -f $(OBJECTS) $(TARGET_LIB) $(TEST_EXEC)
+	rm -rf $(BUILD_DIR) $(EXEC_DIR)
+
+.PHONY: all clean

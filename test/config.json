@@ -1,0 +1,7 @@
+{
+  "homeserver":"https:\/\/matrix.org",
+  "username":"@USERNAME_YOUR:matrix.org",
+  "password":"YOUR_PASSWORD",
+  "room_id":"!YOUR_ROOMID:matrix.org",
+  "access_token":"<DONT FILL IT BECAUSE AUTOMATICALLY FILLING IT!!!>"
+}
