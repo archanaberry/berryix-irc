@@ -1,0 +1,20 @@
+{
+  "configs": [
+      {
+          "protocol": "irc",
+          "server": "irc.libera.chat",
+          "port": 6697,
+          "username": "archanaberry_npc",
+          "password": "",
+          "room": "#archanaberry"
+      },
+      {
+          "protocol": "matrix",
+          "server": "https://matrix.org",
+          "port": 443,
+          "username": "@archanaberry_app:matrix.org",
+          "password": "archanaberry101",
+          "room": "!QRCXepqmFvmMIvnaRq:matrix.org"
+      }
+  ]
+}
