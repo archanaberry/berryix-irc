@@ -95,7 +95,7 @@ To run a test manually:
 
 ## License
 
-This project is part of the **Archana Berry** ecosystem [APBL - Archana Berry Public License](). Licensing terms may vary — see project root or community guidelines for details.
+This project is part of the **Archana Berry** ecosystem [APBL - Archana Berry Public License](https://github.com/archanaberry/Lisensi). Licensing terms may vary — see project root or community guidelines for details.
 
 ---
 
